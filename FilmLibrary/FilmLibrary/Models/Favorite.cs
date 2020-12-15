@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace FilmLibrary.Models
 {
-    public class Film
+    public class Favorite
     {
-        public string Title { get; set; }
     }
 }

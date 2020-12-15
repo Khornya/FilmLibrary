@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FilmLibrary.Models
+namespace FilmLibrary.ViewModels
 {
-    public class Film
+    public class FavoriteViewModel
     {
-        public string Title { get; set; }
     }
 }

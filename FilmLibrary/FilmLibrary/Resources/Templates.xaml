@@ -1,4 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:FilmLibrary">
+                    xmlns:local="clr-namespace:FilmLibrary"
+                    xmlns:views="clr-namespace:FilmLibrary.Views"
+                    xmlns:vm="clr-namespace:FilmLibrary.ViewModels">
+    <DataTemplate DataType="{x:Type vm:CollectionViewModel}">
+        <views:CollectionView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+        <views:SearchView/>
+    </DataTemplate>
 </ResourceDictionary>

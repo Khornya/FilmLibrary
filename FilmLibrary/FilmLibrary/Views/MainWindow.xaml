@@ -6,8 +6,13 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:FilmLibrary"
         mc:Ignorable="d"
-        Title="My Film Library" Height="450" Width="800">
+        Title="Ma bibliothèque de films" Height="450" Width="800">
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" ItemsSource="{Binding ItemsSource}" DisplayMemberPath="Title"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        </TabControl>
     </Grid>
 </mah:MetroWindow>

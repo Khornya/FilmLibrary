@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CoursWPF.MVVM.Abstracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FilmLibrary.Models
+namespace FilmLibrary.ViewModels.Abstracts
 {
-    public class Film
+    interface IViewModel
     {
-        public string Title { get; set; }
     }
 }
