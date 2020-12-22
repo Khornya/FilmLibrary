@@ -6,5 +6,25 @@
              xmlns:local="clr-namespace:FilmLibrary.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <TextBlock Text="Ma collection ici"/>
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox Grid.Column="0"
+             Height="375"
+             ItemsSource="{Binding ItemsSource}"
+             SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+             DisplayMemberPath="Film.Title"/>
+
+        <Grid Grid.Column="1" Visibility="{Binding SelectedItem, Converter={StaticResource SharedObjectToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
+            <TextBlock Grid.Row="1" Text="{Binding Path=Film.Title}"/>
+        </Grid>
+    </Grid>
 </UserControl>

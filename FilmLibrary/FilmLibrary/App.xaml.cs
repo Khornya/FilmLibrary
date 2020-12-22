@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
+using FilmLibrary.Models;
+using TMDbLib.Client;
 
 namespace FilmLibrary
 {
@@ -13,5 +17,42 @@ namespace FilmLibrary
     /// </summary>
     public partial class App : Application
     {
+        #region Fields
+
+        /// <summary>
+        ///     Jeu de données de l'application.
+        /// </summary>
+        private static DataStore _DataStore;
+
+        private static TMDbClient _TMDbClient;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Obtient le jeu de données de l'application.
+        /// </summary>
+        public static DataStore DataStore => _DataStore;
+
+        public static TMDbClient TMDbClient { get => _TMDbClient; }
+
+        public static string ApiBaseUrl { get; set; }
+
+        #endregion
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
+            _DataStore = DataStore.Load();
+
+            _TMDbClient = new TMDbClient("533402a27be0fdb3dff4ad2829149295");
+
+            ApiBaseUrl = "https://image.tmdb.org/t/p/w500";
+
+        }
     }
 }
