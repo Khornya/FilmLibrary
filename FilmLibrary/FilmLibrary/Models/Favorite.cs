@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Search;
 
 namespace FilmLibrary.Models
 {
     public class Favorite
     {
-        private SearchMovie _Film;
+        private Movie _Film;
 
-        public SearchMovie Film {
+        public Movie Film {
             get => this._Film;
             set => this._Film = value;
         }
 
-        public Favorite(SearchMovie film)
+        public Favorite(Movie film)
         {
             this._Film = film;
         }
