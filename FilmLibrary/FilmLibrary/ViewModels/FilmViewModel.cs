@@ -9,26 +9,27 @@ using TMDbLib.Objects.Movies;
 
 namespace FilmLibrary
 {
-    public class MovieViewModel
+    public class FilmViewModel : ObservableObject
     {
         private RelayCommand _AddToCollection;
-        private Movie _SelectedMovie;
+        private Film _SelectedFilm;
 
         public RelayCommand AddToCollection { get => _AddToCollection; set => _AddToCollection = value; }
-        public Movie SelectedMovie { get => _SelectedMovie; set => _SelectedMovie = value; }
+        public Film SelectedFilm { get => _SelectedFilm; set => this.SetProperty(nameof(this.SelectedFilm), ref this._SelectedFilm, value); }
 
-        public MovieViewModel()
+        public FilmViewModel()
         {
             this._AddToCollection = new RelayCommand(this.ExecuteAddToCollection, this.CanExecuteAddToCollection);
         }
+
         private bool CanExecuteAddToCollection(object arg)
         {
-            return App.DataStore.Collection.Where(favorite => favorite.Film.Id == this._SelectedMovie.Id).Count() == 0;
+            return !App.DataStore.Collection.Where(favorite => favorite.Film.Id == _SelectedFilm.Id).Any();
         }
 
         private void ExecuteAddToCollection(object arg)
         {
-            App.DataStore.Collection.Add(new Favorite(this._SelectedMovie));
+            App.DataStore.Collection.Add(new Favorite(this._SelectedFilm));
         }
     }
 }
