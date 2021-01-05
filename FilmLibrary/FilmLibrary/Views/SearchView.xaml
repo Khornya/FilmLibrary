@@ -37,24 +37,7 @@
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
             <StackPanel DataContext="{Binding FilmViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
-                <TextBlock Text="{Binding SelectedFilm.Title}" TextWrapping="Wrap" HorizontalAlignment="Center" FontWeight="Bold" Typography.Capitals="SmallCaps" FontSize="18" TextAlignment="Center"/>
-                <Image Source="{Binding SelectedFilm.PosterUrl}" Width="200"/>
-
-                <TextBlock Text="Synopsis: "/>
-                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedFilm.Synopsis}"/>
-                <Separator/>
-                <WrapPanel>
-                    <TextBlock Text="Genre(s): " />
-                    <TextBlock Text="{Binding SelectedFilm.Genres, Converter={StaticResource ListToStringConverter}}"/>
-                </WrapPanel>
-                <WrapPanel>
-                    <TextBlock Text="Date de sortie: " />
-                    <TextBlock Text="{Binding SelectedFilm.ReleaseDate, Converter={StaticResource DateToStringConverter}}"/>
-                </WrapPanel>
-                <WrapPanel>
-                    <TextBlock Text="Note moyenne: " />
-                    <TextBlock Text="{Binding SelectedFilm.VoteAverage}"/>
-                </WrapPanel>
+                <local:FilmView DataContext="{Binding SelectedFilm}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FilmLibrary.Views"
+             xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid >
@@ -11,20 +12,45 @@
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="60*"/>
         </Grid.ColumnDefinitions>
-
-        <ListBox Grid.Column="0"
-             Height="375"
-             ItemsSource="{Binding ItemsSource}"
-             SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-             DisplayMemberPath="Film.Title"/>
-
-        <Grid Grid.Column="1" Visibility="{Binding SelectedItem, Converter={StaticResource SharedObjectToVisibilityConverter}}">
+        <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
-            <TextBlock Grid.Row="1" Text="{Binding Path=Film.Title}"/>
+            <TextBox Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Row="1" Content="Rechercher par titre" Command="{Binding SearchByTitle}"></Button>
+            <ComboBox Grid.Row="2"
+                      ItemsSource="{Binding Genres}"
+                      SelectedItem="{Binding SelectedGenre}"
+                      DisplayMemberPath="Name">
+            </ComboBox>
+            <Button Grid.Row="3" Content="Rechercher par genre" Command="{Binding SearchByGenre}"></Button>
+            <ListBox Grid.Row="4"
+                     Height="350"
+                     ItemsSource="{Binding ItemsSource}" 
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     DisplayMemberPath="Film.Title"/>
         </Grid>
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
+            <controls:AdaptativeGridView>
+                <Button Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
+                <local:FilmView DataContext="{Binding SelectedItem.Film}"/>
+                <Separator/>
+                <WrapPanel>
+                    <Label Content="Ma note: "/>
+                    <TextBox Text="{Binding SelectedItem.Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Content="Mon avis: "/>
+                    <TextBox
+                        Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Width="1000"/>
+                </WrapPanel>
+            </controls:AdaptativeGridView>
+        </ScrollViewer>
     </Grid>
 </UserControl>
