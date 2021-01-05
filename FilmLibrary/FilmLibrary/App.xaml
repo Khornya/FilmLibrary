@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:FilmLibrary"
              xmlns:MVVMconverters="clr-namespace:CoursWPF.MVVM.Converters;assembly=CoursWPF.MVVM"
+             xmlns:Converters="clr-namespace:FilmLibrary.Converters"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
          <ResourceDictionary>
@@ -16,6 +17,10 @@
                 <ResourceDictionary Source="Resources/Templates.xaml"/>
                 <ResourceDictionary>
                     <MVVMconverters:ObjectToVisibilityConverter x:Key="SharedObjectToVisibilityConverter"/>
+                    <Converters:GenreIdsToStringConverter x:Key="GenreIdsToStringConverter"/>
+                    <Converters:DateToStringConverter x:Key="DateToStringConverter"/>
+                    <Converters:GenresToStringConverter x:Key="GenresToStringConverter"/>
+                    <Converters:ListToStringConverter x:Key="ListToStringConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

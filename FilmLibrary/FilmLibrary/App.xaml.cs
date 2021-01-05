@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
@@ -9,6 +10,7 @@ using System.Windows;
 using System.Windows.Markup;
 using FilmLibrary.Models;
 using TMDbLib.Client;
+using TMDbLib.Objects.General;
 
 namespace FilmLibrary
 {
@@ -39,6 +41,8 @@ namespace FilmLibrary
 
         public static string ApiBaseUrl { get; set; }
 
+        public static ObservableCollection<Genre> Genres { get; set; }
+
         #endregion
 
         protected override void OnStartup(StartupEventArgs e)
@@ -52,6 +56,8 @@ namespace FilmLibrary
             _TMDbClient = new TMDbClient("533402a27be0fdb3dff4ad2829149295");
 
             ApiBaseUrl = "https://image.tmdb.org/t/p/w500";
+
+            Genres = new ObservableCollection<Genre>(_TMDbClient.GetMovieGenresAsync().Result);
 
         }
     }

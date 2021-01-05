@@ -16,21 +16,24 @@ namespace FilmLibrary.ViewModels
 {
     public class SearchViewModel : ViewModelList<SearchMovie>, IViewModel
     {
-        
+
         private RelayCommand _SearchByTitle;
         private RelayCommand _SearchByGenre;
-        private SearchMovie selectedMovie;
-        private MovieViewModel _MovieViewModel;
+        private SearchMovie _SelectedMovie;
+        private FilmViewModel _FilmViewModel;
+        private Genre selectedGenre;
+        private ObservableCollection<Genre> genres;
+        private string apiBaseUrl;
+        private string searchText;
 
         public RelayCommand SearchByTitle { get => _SearchByTitle; set => _SearchByTitle = value; }
 
-        public string ApiBaseUrl { get; set; }
-        public string SearchText { get; set; }
-        public ObservableCollection<Genre> Genres { get; set; }
-        public Genre SelectedGenre { get; set; }
-        public SearchMovie SelectedMovie { get => selectedMovie; set => selectedMovie = value; }
+        public string ApiBaseUrl { get => apiBaseUrl; set => apiBaseUrl = value; }
+        public string SearchText { get => searchText; set => searchText = value; }
+        public ObservableCollection<Genre> Genres { get => genres; set => genres = value; }
+        public Genre SelectedGenre { get => selectedGenre; set => selectedGenre = value; }
         public RelayCommand SearchByGenre { get => _SearchByGenre; set => _SearchByGenre = value; }
-        public MovieViewModel MovieViewModel { get => _MovieViewModel; set => _MovieViewModel = value; }
+        public FilmViewModel FilmViewModel { get => _FilmViewModel; set => _FilmViewModel = value; }
 
         public SearchViewModel()
         {
@@ -40,7 +43,7 @@ namespace FilmLibrary.ViewModels
             this.ApiBaseUrl = "https://image.tmdb.org/t/p/w200";
             this.SearchText = "";
             this.Genres = new ObservableCollection<Genre>(App.TMDbClient.GetMovieGenresAsync().Result);
-            this._MovieViewModel = new MovieViewModel();
+            this._FilmViewModel = new FilmViewModel();
         }
 
         protected override void OnPropertyChanged(string propertyName)
@@ -52,10 +55,12 @@ namespace FilmLibrary.ViewModels
                 case nameof(this.SelectedItem):
                     if (this.SelectedItem != null)
                     {
-                        this._MovieViewModel.SelectedMovie = App.TMDbClient.GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
-                    } else
+                        Movie selectedMovie = App.TMDbClient.GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
+                        this._FilmViewModel.SelectedFilm = new Film(selectedMovie);
+                    }
+                    else
                     {
-                        this._MovieViewModel.SelectedMovie = null;
+                        this._FilmViewModel.SelectedFilm = null;
                     }
                     break;
                 default:
@@ -70,12 +75,11 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByGenre(object obj)
         {
-            SearchContainerWithId<SearchMovie> results = App.TMDbClient.GetGenreMoviesAsync(this.SelectedGenre.Id).Result;
+            IEnumerable<int> genreList = new List<int>() { this.SelectedGenre.Id };
+            SearchContainer<SearchMovie> results = App.TMDbClient.DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(1).Result;// GetGenreMoviesAsync(this.SelectedGenre.Id).Result;
             this.ItemsSource.Clear(); // TODO : refacto
             foreach (SearchMovie searchMovie in results.Results)
             {
-                //Movie movie = App.TMDbClient.GetMovieAsync(searchMovie.Id, MovieMethods.Credits).Result;
-                searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
                 this.ItemsSource.Add(searchMovie);
             }
         }
@@ -91,8 +95,6 @@ namespace FilmLibrary.ViewModels
             this.ItemsSource.Clear();
             foreach (SearchMovie searchMovie in results.Results)
             {
-                //Movie movie = App.TMDbClient.GetMovieAsync(searchMovie.Id, MovieMethods.Credits).Result;
-                searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
                 this.ItemsSource.Add(searchMovie);
             }
         }
