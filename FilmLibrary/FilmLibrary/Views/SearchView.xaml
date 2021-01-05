@@ -35,12 +35,17 @@
                      DisplayMemberPath="Title"/>
         </Grid>
 
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
+        <ScrollViewer Grid.Column="1"
+                      VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding SelectedMovie, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}"
+                      DataContext="{Binding MovieViewModel}"
+                      Margin="10"
+                      Height="800">
             <StackPanel>
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
-                <TextBlock Text="{Binding SelectedItem.Title}" TextWrapping="Wrap" HorizontalAlignment="Center" FontWeight="Bold" Typography.Capitals="SmallCaps" FontSize="18" TextAlignment="Center"/>
-                <Image Source="{Binding SelectedItem.PosterPath}" Width="200"/>
-                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedItem.Overview}"/>
+                <TextBlock Text="{Binding SelectedMovie.Title}" TextWrapping="Wrap" HorizontalAlignment="Center" FontWeight="Bold" Typography.Capitals="SmallCaps" FontSize="18" TextAlignment="Center"/>
+                <Image Source="{Binding SelectedMovie.PosterPath}" Width="200"/>
+                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedMovie.Overview}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

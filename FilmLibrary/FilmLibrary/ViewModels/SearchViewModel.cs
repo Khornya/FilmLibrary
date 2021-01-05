@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMDbLib.Objects.Discover;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Search;
@@ -53,6 +54,7 @@ namespace FilmLibrary.ViewModels
                     if (this.SelectedItem != null)
                     {
                         this._MovieViewModel.SelectedMovie = App.TMDbClient.GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
+                        this._MovieViewModel.SelectedMovie.PosterPath = this.ApiBaseUrl + this._MovieViewModel.SelectedMovie.PosterPath;
                     } else
                     {
                         this._MovieViewModel.SelectedMovie = null;
@@ -70,12 +72,12 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByGenre(object obj)
         {
-            SearchContainerWithId<SearchMovie> results = App.TMDbClient.GetGenreMoviesAsync(this.SelectedGenre.Id).Result;
+            IEnumerable<int> genreList = new List<int>(){ this.SelectedGenre.Id };
+            SearchContainer<SearchMovie> results = App.TMDbClient.DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(1).Result;// GetGenreMoviesAsync(this.SelectedGenre.Id).Result;
             this.ItemsSource.Clear(); // TODO : refacto
             foreach (SearchMovie searchMovie in results.Results)
             {
-                //Movie movie = App.TMDbClient.GetMovieAsync(searchMovie.Id, MovieMethods.Credits).Result;
-                searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
+                //searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
                 this.ItemsSource.Add(searchMovie);
             }
         }
@@ -87,12 +89,11 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByTitle(object param)
         {
-            SearchContainer<SearchMovie> results = App.TMDbClient.SearchMovieAsync(this.SearchText).Result;
+            SearchContainer<SearchMovie> results = App.TMDbClient.SearchMovieAsync(this.SearchText, 1).Result;
             this.ItemsSource.Clear();
             foreach (SearchMovie searchMovie in results.Results)
             {
-                //Movie movie = App.TMDbClient.GetMovieAsync(searchMovie.Id, MovieMethods.Credits).Result;
-                searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
+                //searchMovie.PosterPath = this.ApiBaseUrl + searchMovie.PosterPath;
                 this.ItemsSource.Add(searchMovie);
             }
         }

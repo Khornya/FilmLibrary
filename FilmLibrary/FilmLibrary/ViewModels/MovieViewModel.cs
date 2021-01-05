@@ -23,7 +23,7 @@ namespace FilmLibrary
         }
         private bool CanExecuteAddToCollection(object arg)
         {
-            return App.DataStore.Collection.Where(favorite => favorite.Film == this._SelectedMovie).Count() == 0;
+            return App.DataStore.Collection.Where(favorite => favorite.Film.Id == this._SelectedMovie.Id).Count() == 0;
         }
 
         private void ExecuteAddToCollection(object arg)
