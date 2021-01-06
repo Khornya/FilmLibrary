@@ -20,7 +20,6 @@ namespace FilmLibrary.ViewModels
 
         private RelayCommand _SearchByTitle;
         private RelayCommand _SearchByGenre;
-        private SearchMovie _SelectedMovie;
         private FilmViewModel _FilmViewModel;
         private Genre selectedGenre;
         private ObservableCollection<Genre> genres;

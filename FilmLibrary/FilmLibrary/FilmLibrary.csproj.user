@@ -10,12 +10,18 @@
     <Compile Update="Views\CollectionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\FilmView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SearchView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\CollectionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FilmView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\SearchView.xaml">

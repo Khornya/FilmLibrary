@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FilmLibrary.Views"
-             xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:starratingscontrol="clr-namespace:StarRatingsControl;assembly=StarRatingsControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid >
@@ -36,21 +37,36 @@
                      DisplayMemberPath="Film.Title"/>
         </Grid>
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
-            <controls:AdaptativeGridView>
-                <Button Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
-                <local:FilmView DataContext="{Binding SelectedItem.Film}"/>
-                <Separator/>
-                <WrapPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Button Grid.Column="0" Grid.Row="0" Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
+                <mah:ToggleSwitch
+                    Grid.Column="0" Grid.Row="1" 
+                    OffContent="A voir"
+                    OnContent="Déjà vu"
+                    IsOn="{Binding SelectedItem.Seen}" />
+                <local:FilmView Grid.Column="0" Grid.Row="2" DataContext="{Binding SelectedItem.Film}"/>
+                <WrapPanel Grid.Column="0" Grid.Row="3">
+                    <Separator/>
                     <Label Content="Ma note: "/>
-                    <TextBox Text="{Binding SelectedItem.Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="-" Command="{Binding UpdateNote}" CommandParameter="-" />
+                    <starratingscontrol:RatingsControl NumberOfStars="5" Value="{Binding SelectedItem.Note}" StarOutlineColor="Gray" />
+                    <Button Content="+" Command="{Binding UpdateNote}" CommandParameter="+"/>
                 </WrapPanel>
-                <WrapPanel>
+                <WrapPanel Grid.Column="0" Grid.Row="4">
                     <Label Content="Mon avis: "/>
-                    <TextBox
-                        Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Width="1000"/>
+                    <TextBox Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="Auto"/>
                 </WrapPanel>
-            </controls:AdaptativeGridView>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </UserControl>

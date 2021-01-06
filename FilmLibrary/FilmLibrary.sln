@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmLibrary", "FilmLibrary\FilmLibrary.csproj", "{03C20102-3205-4E90-8070-2440A855C526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmLibrary", "FilmLibrary\FilmLibrary.csproj", "{03C20102-3205-4E90-8070-2440A855C526}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoursWPF.MVVM", "CoursWPF.MVVM\CoursWPF.MVVM.csproj", "{A34DC344-4BF9-4A33-8B65-93F6F4339455}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarRatingsControl", "RatingsControl\StarRatingsControl\StarRatingsControl.csproj", "{2E8EAC36-7B62-4FE7-8D11-4CA29D148905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A34DC344-4BF9-4A33-8B65-93F6F4339455}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A34DC344-4BF9-4A33-8B65-93F6F4339455}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A34DC344-4BF9-4A33-8B65-93F6F4339455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E8EAC36-7B62-4FE7-8D11-4CA29D148905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E8EAC36-7B62-4FE7-8D11-4CA29D148905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E8EAC36-7B62-4FE7-8D11-4CA29D148905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E8EAC36-7B62-4FE7-8D11-4CA29D148905}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
     <PackageReference Include="MahApps.Metro" Version="2.4.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="TMDbLib" Version="1.6.0" />
@@ -14,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CoursWPF.MVVM\CoursWPF.MVVM.csproj" />
+    <ProjectReference Include="..\RatingsControl\StarRatingsControl\StarRatingsControl.csproj" />
   </ItemGroup>
 
 </Project>

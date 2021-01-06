@@ -23,6 +23,7 @@ namespace FilmLibrary.Models
         public Favorite(Film film)
         {
             this._Film = film;
+            this._Note = 1;
         }
     }
 }
