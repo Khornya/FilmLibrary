@@ -47,6 +47,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Button Grid.Column="0" Grid.Row="0" Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
                 <mah:ToggleSwitch
@@ -62,10 +63,8 @@
                     <starratingscontrol:RatingsControl NumberOfStars="5" Value="{Binding SelectedItem.Note}" StarOutlineColor="Gray" />
                     <Button Content="+" Command="{Binding UpdateNote}" CommandParameter="+"/>
                 </WrapPanel>
-                <WrapPanel Grid.Column="0" Grid.Row="4">
-                    <Label Content="Mon avis: "/>
-                    <TextBox Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" Width="Auto"/>
-                </WrapPanel>
+                <Label Grid.Column="0" Grid.Row="5" Content="Mon avis: "/>
+                <TextBox Grid.Column="0" Grid.Row="6" Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
             </Grid>
         </ScrollViewer>
     </Grid>

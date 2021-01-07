@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:FilmLibrary.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="60*"/>
@@ -17,7 +17,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBox Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Row="1" Content="Rechercher par titre" Command="{Binding SearchByTitle}"></Button>
@@ -27,14 +27,17 @@
                       DisplayMemberPath="Name">
             </ComboBox>
             <Button Grid.Row="3" Content="Rechercher par genre" Command="{Binding SearchByGenre}"></Button>
-            <ListBox Grid.Row="4"
-                     Height="350"
+            <Border Grid.Row="4" x:Name="HeightHelperPanel">
+                <ListBox
+                     MinHeight="150"
+                     Height="{Binding Path=ActualHeight, ElementName=HeightHelperPanel}"
                      ItemsSource="{Binding ItemsSource}" 
                      SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      DisplayMemberPath="Title"/>
+            </Border>
         </Grid>
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="Auto">
             <StackPanel DataContext="{Binding FilmViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
                 <local:FilmView DataContext="{Binding SelectedFilm}"/>
