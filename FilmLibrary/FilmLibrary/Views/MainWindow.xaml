@@ -9,9 +9,17 @@
         Title="Ma bibliothèque de films" MinHeight="500" MinWidth="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TabControl Grid.Row="0" ItemsSource="{Binding ItemsSource}" DisplayMemberPath="Title"
+        <Menu Grid.Row="0">
+            <MenuItem Header="Fichier">
+                <MenuItem Header="Sauvegarder" Command="{Binding Save}"/>
+                <Separator/>
+                <MenuItem Header="Quitter"  Command="{Binding Exit}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1" ItemsSource="{Binding ItemsSource}" DisplayMemberPath="Title"
                 SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
         </TabControl>
     </Grid>

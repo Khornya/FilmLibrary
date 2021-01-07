@@ -5,10 +5,12 @@ using FilmLibrary.ViewModels.Abstracts;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using TMDbLib.Objects.General;
 
 namespace FilmLibrary.ViewModels
 {
@@ -16,21 +18,35 @@ namespace FilmLibrary.ViewModels
     {
         private RelayCommand _RemoveFromCollection;
         private RelayCommand _UpdateNote;
+        private RelayCommand _SearchByTitle;
+        private RelayCommand _SearchByGenre;
+        private string _SearchText;
+        private ObservableCollection<Genre> _Genres;
+        private Genre _SelectedGenre;
 
         public RelayCommand RemoveFromCollection { get => _RemoveFromCollection; set => _RemoveFromCollection = value; }
         public RelayCommand UpdateNote { get => _UpdateNote; set => _UpdateNote = value; }
+        public string SearchText { get => _SearchText; set => _SearchText = value; }
+        public RelayCommand SearchByTitle { get => _SearchByTitle; set => _SearchByTitle = value; }
+        public ObservableCollection<Genre> Genres { get => _Genres; set => _Genres = value; }
+        public Genre SelectedGenre { get => _SelectedGenre; set => _SelectedGenre = value; }
+        public RelayCommand SearchByGenre { get => _SearchByGenre; set => _SearchByGenre = value; }
 
         public CollectionViewModel()
         {
             this.Title = "Ma Collection";
+            this.SearchText = "";
+            this._Genres = App.Genres;
             this.ItemsSource = App.DataStore.Collection;
             this._RemoveFromCollection = new RelayCommand(this.ExecuteRemoveFromCollection);
             this._UpdateNote = new RelayCommand(this.ExecuteUpdateNote, this.CanExecuteUpdateNote);
+            this._SearchByTitle = new RelayCommand(this.ExecuteSearchByTitle);
+            this._SearchByGenre = new RelayCommand(this.ExecuteSearchByGenre, this.CanExecuteSearchByGenre);
         }
 
         private bool CanExecuteUpdateNote(object arg)
         {
-            switch(arg)
+            switch (arg)
             {
                 case "-":
                     return this.SelectedItem?.Note > 1;
@@ -62,6 +78,21 @@ namespace FilmLibrary.ViewModels
         private void ExecuteRemoveFromCollection(object param)
         {
             App.DataStore.Collection.Remove(this.SelectedItem);
+        }
+
+        private void ExecuteSearchByTitle(object param)
+        {
+            this.ItemsSource = new ObservableCollection<Favorite>(App.DataStore.Collection.Where(favorite => favorite.Film.Title.ToLower().Contains(this.SearchText.ToLower())));
+        }
+
+        private bool CanExecuteSearchByGenre(object arg)
+        {
+            return this.SelectedGenre != null;
+        }
+
+        private void ExecuteSearchByGenre(object obj)
+        {
+            this.ItemsSource = new ObservableCollection<Favorite>(App.DataStore.Collection.Where(favorite => favorite.Film.Genres.Contains(this.SelectedGenre.Name)));
         }
 
     }

@@ -36,5 +36,7 @@ namespace FilmLibrary.Models
             this._ReleaseDate = movie.ReleaseDate;
             this._VoteAverage = movie.VoteAverage;
         }
+
+        public Film() { }
     }
 }

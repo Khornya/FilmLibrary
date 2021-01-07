@@ -47,17 +47,10 @@ namespace FilmLibrary.Models
             {
                 dataStore = JsonConvert.DeserializeObject<DataStore>(File.ReadAllText(".\\data.json"));
 
-                //foreach (BankAccountLine bankAccountLine in dataStore.BankAccountLines)
-                //{
-                //    BankAccount bankAccount = dataStore.BankAccounts.FirstOrDefault(ba => ba.Identifier == bankAccountLine.IdentifierBankAccount);
-
-                //    if (bankAccount != null)
-                //    {
-                //        bankAccount.BankAccountLines.Add(bankAccountLine);
-                //    }
-
-                //    bankAccountLine.Category = dataStore.Categories.FirstOrDefault(cat => cat.Identifier == bankAccountLine.IdentifierCategory);
-                //}
+                foreach (Favorite favorite in dataStore.Collection)
+                {
+                    favorite.Film = new Film(App.TMDbClient.GetMovieAsync(favorite.Film.Id).Result);
+                }
             }
             catch
             {

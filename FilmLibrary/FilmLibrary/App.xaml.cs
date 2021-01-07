@@ -51,13 +51,13 @@ namespace FilmLibrary
 
             FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
-            _DataStore = DataStore.Load();
-
             _TMDbClient = new TMDbClient("533402a27be0fdb3dff4ad2829149295");
 
             ApiBaseUrl = "https://image.tmdb.org/t/p/w500";
 
             Genres = new ObservableCollection<Genre>(_TMDbClient.GetMovieGenresAsync().Result);
+
+            _DataStore = DataStore.Load();
 
         }
     }

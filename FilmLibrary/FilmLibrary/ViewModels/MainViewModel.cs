@@ -1,4 +1,5 @@
-﻿using CoursWPF.MVVM.ViewModels;
+﻿using CoursWPF.MVVM;
+using CoursWPF.MVVM.ViewModels;
 using CoursWPF.MVVM.ViewModels.Abstracts;
 using FilmLibrary.ViewModels;
 using FilmLibrary.ViewModels.Abstracts;
@@ -22,9 +23,15 @@ namespace FilmLibrary
     {
         private SearchViewModel _SearchViewModel;
         private CollectionViewModel _CollectionViewModel;
+        private RelayCommand _Exit;
+        private RelayCommand _Save;
+        private CollectionViewModel collectionViewModel;
+        private SearchViewModel searchViewModel;
 
-        public SearchViewModel SearchViewModel { get; set; }
-        public CollectionViewModel CollectionViewModel { get; set; }
+        public SearchViewModel SearchViewModel { get => searchViewModel; set => searchViewModel = value; }
+        public CollectionViewModel CollectionViewModel { get => collectionViewModel; set => collectionViewModel = value; }
+        public RelayCommand Save { get => _Save; }
+        public RelayCommand Exit { get => _Exit; }
 
         public MainViewModel()
         {
@@ -33,6 +40,8 @@ namespace FilmLibrary
             this.ItemsSource.Add(this._CollectionViewModel);
             this.ItemsSource.Add(this._SearchViewModel);
             this.SelectedItem = this._CollectionViewModel;
+            this._Exit = new RelayCommand((param) => Environment.Exit(0));
+            this._Save = new RelayCommand((param) => App.DataStore.Save());
         }
     }
 }
