@@ -11,6 +11,9 @@
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="60*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -37,7 +40,7 @@
                      DisplayMemberPath="Title"/>
             </Border>
         </Grid>
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="Auto">
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10">
             <StackPanel DataContext="{Binding FilmViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
                 <local:FilmView DataContext="{Binding SelectedFilm}"/>

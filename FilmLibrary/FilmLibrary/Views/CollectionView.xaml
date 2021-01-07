@@ -8,18 +8,21 @@
              xmlns:starratingscontrol="clr-namespace:StarRatingsControl;assembly=StarRatingsControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid >
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="60*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBox Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Row="1" Content="Rechercher par titre" Command="{Binding SearchByTitle}"></Button>
@@ -30,16 +33,15 @@
             </ComboBox>
             <Button Grid.Row="3" Content="Rechercher par genre" Command="{Binding SearchByGenre}"></Button>
             <ListBox Grid.Row="4"
-                     Height="350"
                      ItemsSource="{Binding ItemsSource}" 
                      SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      DisplayMemberPath="Film.Title"/>
         </Grid>
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10" Height="800">
+        <ScrollViewer Grid.Column="1" Height="Auto" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -48,6 +50,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Button Grid.Column="0" Grid.Row="0" Content="Supprimer de ma collection" Command="{Binding RemoveFromCollection}"/>
                 <mah:ToggleSwitch
@@ -58,13 +61,15 @@
                 <local:FilmView Grid.Column="0" Grid.Row="2" DataContext="{Binding SelectedItem.Film}"/>
                 <WrapPanel Grid.Column="0" Grid.Row="3">
                     <Separator/>
-                    <Label Content="Ma note: "/>
+                    <TextBlock Text="Ma note: " />
                     <Button Content="-" Command="{Binding UpdateNote}" CommandParameter="-" />
                     <starratingscontrol:RatingsControl NumberOfStars="5" Value="{Binding SelectedItem.Note}" StarOutlineColor="Gray" />
                     <Button Content="+" Command="{Binding UpdateNote}" CommandParameter="+"/>
                 </WrapPanel>
-                <Label Grid.Column="0" Grid.Row="5" Content="Mon avis: "/>
-                <TextBox Grid.Column="0" Grid.Row="6" Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                <StackPanel Grid.Column="0" Grid.Row="5">
+                    <TextBlock Text="Mon avis: "/>
+                    <TextBox Text="{Binding SelectedItem.Comment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="100" VerticalAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True"/>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>
