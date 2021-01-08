@@ -20,11 +20,15 @@ namespace FilmLibrary.ViewModels
 
         private RelayCommand _SearchByTitle;
         private RelayCommand _SearchByGenre;
+        private RelayCommand _SwitchPage;
         private FilmViewModel _FilmViewModel;
         private Genre selectedGenre;
         private ObservableCollection<Genre> genres;
         private string apiBaseUrl;
         private string searchText;
+        private int _SearchResultPageCount;
+        private int _CurrentPage;
+        private string _CurrentSearchMode;
 
         public RelayCommand SearchByTitle { get => _SearchByTitle; set => _SearchByTitle = value; }
 
@@ -34,12 +38,16 @@ namespace FilmLibrary.ViewModels
         public Genre SelectedGenre { get => selectedGenre; set => selectedGenre = value; }
         public RelayCommand SearchByGenre { get => _SearchByGenre; set => _SearchByGenre = value; }
         public FilmViewModel FilmViewModel { get => _FilmViewModel; set => _FilmViewModel = value; }
+        public int SearchResultPageCount { get => _SearchResultPageCount; set => _SearchResultPageCount = value; }
+        public RelayCommand SwitchPage { get => _SwitchPage; set => _SwitchPage = value; }
+        public int CurrentPage { get => _CurrentPage; set => this.SetProperty(nameof(this.CurrentPage), ref this._CurrentPage, value); }
 
         public SearchViewModel()
         {
             this.Title = "Rechercher";
             this._SearchByTitle = new RelayCommand(this.ExecuteSearchByTitle, this.CanExecuteSearchByTitle);
             this._SearchByGenre = new RelayCommand(this.ExecuteSearchByGenre, this.CanExecuteSearchByGenre);
+            this._SwitchPage = new RelayCommand(this.ExecuteSwitchPage, this.CanExecuteSwitchPage);
             this.ApiBaseUrl = "https://image.tmdb.org/t/p/w200";
             this.SearchText = "";
             this.Genres = new ObservableCollection<Genre>(App.TMDbClient.GetMovieGenresAsync().Result);
@@ -68,6 +76,57 @@ namespace FilmLibrary.ViewModels
             }
         }
 
+        private bool CanExecuteSwitchPage(object arg)
+        {
+            switch (arg)
+            {
+                case "+":
+                    return this._CurrentPage < this._SearchResultPageCount;
+                case "-":
+                    return this._CurrentPage > 1;
+                case "--":
+                    return this._CurrentPage != 1;
+                case "++":
+                    return this._CurrentPage != this._SearchResultPageCount;
+                default:
+                    throw new InvalidOperationException();
+
+            }
+        }
+
+        private void ExecuteSwitchPage(object obj)
+        {
+            int newPage;
+            switch (obj)
+            {
+                case "+":
+                    newPage = this._CurrentPage + 1;
+                    break;
+                case "-":
+                    newPage = this._CurrentPage - 1;
+                    break;
+                case "--":
+                    newPage = 1;
+                    break;
+                case "++":
+                    newPage = this._SearchResultPageCount;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            switch (this._CurrentSearchMode)
+            {
+                case "byTitle":
+                    this.InternalSearchByTitle(newPage);
+                    break;
+                case "byGenre":
+                    this.InternalSearchByGenre(newPage);
+                    break;
+                default:
+                    throw new ApplicationException("Unrecognized search mode");
+            }
+        }
+
         private bool CanExecuteSearchByGenre(object arg)
         {
             return this.SelectedGenre != null;
@@ -75,13 +134,16 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByGenre(object obj)
         {
-            IEnumerable<int> genreList = new List<int>(){ this.SelectedGenre.Id };
-            SearchContainer<SearchMovie> results = App.TMDbClient.DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(1).Result;// GetGenreMoviesAsync(this.SelectedGenre.Id).Result;
-            this.ItemsSource.Clear(); // TODO : refacto
-            foreach (SearchMovie searchMovie in results.Results)
-            {
-                this.ItemsSource.Add(searchMovie);
-            }
+            this.InternalSearchByGenre(1);
+            this._CurrentSearchMode = "byGenre";
+        }
+
+        private void InternalSearchByGenre(int page)
+        {
+            IEnumerable<int> genreList = new List<int>() { this.SelectedGenre.Id };
+            SearchContainer<SearchMovie> results = App.TMDbClient.DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(page).Result;
+            this.CurrentPage = page;
+            this.ProcessResults(results);
         }
 
         private bool CanExecuteSearchByTitle(object arg)
@@ -91,7 +153,20 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByTitle(object param)
         {
-            SearchContainer<SearchMovie> results = App.TMDbClient.SearchMovieAsync(this.SearchText, 1).Result;
+            this.InternalSearchByTitle(1);
+            this._CurrentSearchMode = "byTitle";
+        }
+
+        private void InternalSearchByTitle(int page)
+        {
+            SearchContainer<SearchMovie> results = App.TMDbClient.SearchMovieAsync(this.SearchText, page).Result;
+            this.CurrentPage = page;
+            this.ProcessResults(results);
+        }
+
+        private void ProcessResults(SearchContainer<SearchMovie> results)
+        {
+            this._SearchResultPageCount = results.TotalPages;
             this.ItemsSource.Clear();
             foreach (SearchMovie searchMovie in results.Results)
             {

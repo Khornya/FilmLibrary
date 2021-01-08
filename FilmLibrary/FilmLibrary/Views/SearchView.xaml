@@ -21,6 +21,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBox Grid.Row="0" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button Grid.Row="1" Content="Rechercher par titre" Command="{Binding SearchByTitle}"></Button>
@@ -39,11 +40,18 @@
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      DisplayMemberPath="Title"/>
             </Border>
+            <WrapPanel Grid.Row="5" Visibility="{Binding SearchResultPageCount, Converter={StaticResource PageCountToVisibilityConverter}}">
+                <Button Content="|&lt;" Command="{Binding SwitchPage}" CommandParameter="--" />
+                <Button Content="&lt;" Command="{Binding SwitchPage}" CommandParameter="-" />
+                <Label Content="{Binding CurrentPage}"/>
+                <Button Content="&gt;" Command="{Binding SwitchPage}" CommandParameter="+" />
+                <Button Content="&gt;|" Command="{Binding SwitchPage}" CommandParameter="++" />
+            </WrapPanel>
         </Grid>
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10">
             <StackPanel DataContext="{Binding FilmViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
-                <local:FilmView DataContext="{Binding SelectedFilm}"/>
+                <local:FilmView DataContext="{Binding SelectedFilm}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

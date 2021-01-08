@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="Resources/Templates.xaml"/>
                 <ResourceDictionary>
                     <MVVMconverters:ObjectToVisibilityConverter x:Key="SharedObjectToVisibilityConverter"/>
+                    <Converters:PageCountToVisibilityConverter x:Key="PageCountToVisibilityConverter"/>
                     <Converters:GenreIdsToStringConverter x:Key="GenreIdsToStringConverter"/>
                     <Converters:DateToStringConverter x:Key="DateToStringConverter"/>
                     <Converters:GenresToStringConverter x:Key="GenresToStringConverter"/>
