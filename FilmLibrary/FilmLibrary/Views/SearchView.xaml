@@ -40,7 +40,7 @@
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      DisplayMemberPath="Title"/>
             </Border>
-            <WrapPanel Grid.Row="5" Visibility="{Binding SearchResultPageCount, Converter={StaticResource PageCountToVisibilityConverter}}">
+            <WrapPanel Grid.Row="5" Visibility="{Binding SearchResultPageCount, Converter={StaticResource PageCountToVisibilityConverter}}" HorizontalAlignment="Center">
                 <Button Content="|&lt;" Command="{Binding SwitchPage}" CommandParameter="--" />
                 <Button Content="&lt;" Command="{Binding SwitchPage}" CommandParameter="-" />
                 <Label Content="{Binding CurrentPage}"/>
