@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using CoursWPF.MVVM;
 using FilmLibrary.Models;
+using FilmLibrary.Models.Abstracts;
+using FilmLibrary.ViewModels.Abstracts;
 using TMDbLib.Objects.Movies;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FilmLibrary
 {
-    public class FilmViewModel : ObservableObject
+    public class FilmViewModel : ObservableObject, IViewModel, IFilmViewModel
     {
         private RelayCommand _AddToCollection;
         private Film _SelectedFilm;
@@ -24,12 +27,12 @@ namespace FilmLibrary
 
         private bool CanExecuteAddToCollection(object arg)
         {
-            return !App.DataStore.Collection.Where(favorite => favorite.Film.Id == _SelectedFilm?.Id).Any();
+            return !App.ServiceProvider.GetService<IDataStore>().Collection.Where(favorite => favorite.Film.Id == _SelectedFilm?.Id).Any();
         }
 
         private void ExecuteAddToCollection(object arg)
         {
-            App.DataStore.Collection.Add(new Favorite(this._SelectedFilm));
+            App.ServiceProvider.GetService<IDataStore>().Collection.Add(new Favorite(this._SelectedFilm));
         }
     }
 }

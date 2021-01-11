@@ -12,10 +12,12 @@ using TMDbLib.Objects.Discover;
 using TMDbLib.Objects.General;
 using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Search;
+using Microsoft.Extensions.DependencyInjection;
+using TMDbLib.Client;
 
 namespace FilmLibrary.ViewModels
 {
-    public class SearchViewModel : ViewModelList<SearchMovie>, IViewModel
+    public class SearchViewModel : ViewModelList<SearchMovie>, IViewModel, ISearchViewModel
     {
 
         private RelayCommand _SearchByTitle;
@@ -50,7 +52,7 @@ namespace FilmLibrary.ViewModels
             this._SwitchPage = new RelayCommand(this.ExecuteSwitchPage, this.CanExecuteSwitchPage);
             this.ApiBaseUrl = "https://image.tmdb.org/t/p/w200";
             this.SearchText = "";
-            this.Genres = new ObservableCollection<Genre>(App.TMDbClient.GetMovieGenresAsync().Result);
+            this.Genres = new ObservableCollection<Genre>(App.ServiceProvider.GetService<TMDbClient>().GetMovieGenresAsync().Result);
             this._FilmViewModel = new FilmViewModel();
         }
 
@@ -63,7 +65,7 @@ namespace FilmLibrary.ViewModels
                 case nameof(this.SelectedItem):
                     if (this.SelectedItem != null)
                     {
-                        Movie selectedMovie = App.TMDbClient.GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
+                        Movie selectedMovie = App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
                         this._FilmViewModel.SelectedFilm = new Film(selectedMovie);
                     }
                     else
@@ -141,7 +143,7 @@ namespace FilmLibrary.ViewModels
         private void InternalSearchByGenre(int page)
         {
             IEnumerable<int> genreList = new List<int>() { this.SelectedGenre.Id };
-            SearchContainer<SearchMovie> results = App.TMDbClient.DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(page).Result;
+            SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(page).Result;
             this.CurrentPage = page;
             this.ProcessResults(results);
         }
@@ -159,7 +161,7 @@ namespace FilmLibrary.ViewModels
 
         private void InternalSearchByTitle(int page)
         {
-            SearchContainer<SearchMovie> results = App.TMDbClient.SearchMovieAsync(this.SearchText, page).Result;
+            SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().SearchMovieAsync(this.SearchText, page).Result;
             this.CurrentPage = page;
             this.ProcessResults(results);
         }

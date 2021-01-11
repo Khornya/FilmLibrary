@@ -1,6 +1,7 @@
 ﻿using CoursWPF.MVVM;
 using CoursWPF.MVVM.ViewModels;
 using FilmLibrary.Models;
+using FilmLibrary.Models.Abstracts;
 using FilmLibrary.ViewModels.Abstracts;
 using MahApps.Metro.Controls;
 using System;
@@ -11,10 +12,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using TMDbLib.Objects.General;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FilmLibrary.ViewModels
 {
-    public class CollectionViewModel : ViewModelList<Favorite>, IViewModel
+    public class CollectionViewModel : ViewModelList<Favorite>, IViewModel, ICollectionViewModel
     {
         private RelayCommand _RemoveFromCollection;
         private RelayCommand _UpdateNote;
@@ -37,7 +39,7 @@ namespace FilmLibrary.ViewModels
             this.Title = "Ma Collection";
             this.SearchText = "";
             this._Genres = App.Genres;
-            this.ItemsSource = App.DataStore.Collection;
+            this.ItemsSource = App.ServiceProvider.GetService<IDataStore>().Collection;
             this._RemoveFromCollection = new RelayCommand(this.ExecuteRemoveFromCollection);
             this._UpdateNote = new RelayCommand(this.ExecuteUpdateNote, this.CanExecuteUpdateNote);
             this._SearchByTitle = new RelayCommand(this.ExecuteSearchByTitle);
@@ -77,12 +79,12 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteRemoveFromCollection(object param)
         {
-            App.DataStore.Collection.Remove(this.SelectedItem);
+            App.ServiceProvider.GetService<IDataStore>().Collection.Remove(this.SelectedItem);
         }
 
         private void ExecuteSearchByTitle(object param)
         {
-            this.ItemsSource = new ObservableCollection<Favorite>(App.DataStore.Collection.Where(favorite => favorite.Film.Title.ToLower().Contains(this.SearchText.ToLower())));
+            this.ItemsSource = new ObservableCollection<Favorite>(App.ServiceProvider.GetService<IDataStore>().Collection.Where(favorite => favorite.Film.Title.ToLower().Contains(this.SearchText.ToLower())));
         }
 
         private bool CanExecuteSearchByGenre(object arg)
@@ -92,7 +94,7 @@ namespace FilmLibrary.ViewModels
 
         private void ExecuteSearchByGenre(object obj)
         {
-            this.ItemsSource = new ObservableCollection<Favorite>(App.DataStore.Collection.Where(favorite => favorite.Film.Genres.Contains(this.SelectedGenre.Name)));
+            this.ItemsSource = new ObservableCollection<Favorite>(App.ServiceProvider.GetService<IDataStore>().Collection.Where(favorite => favorite.Film.Genres.Contains(this.SelectedGenre.Name)));
         }
 
     }

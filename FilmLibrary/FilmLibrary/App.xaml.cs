@@ -11,6 +11,10 @@ using System.Windows.Markup;
 using FilmLibrary.Models;
 using TMDbLib.Client;
 using TMDbLib.Objects.General;
+using Microsoft.Extensions.DependencyInjection;
+using FilmLibrary.Models.Abstracts;
+using FilmLibrary.ViewModels;
+using FilmLibrary.ViewModels.Abstracts;
 
 namespace FilmLibrary
 {
@@ -21,23 +25,13 @@ namespace FilmLibrary
     {
         #region Fields
 
-        /// <summary>
-        ///     Jeu de données de l'application.
-        /// </summary>
-        private static DataStore _DataStore;
-
-        private static TMDbClient _TMDbClient;
+        private static ServiceProvider _ServiceProvider;
 
         #endregion
 
         #region Properties
 
-        /// <summary>
-        ///     Obtient le jeu de données de l'application.
-        /// </summary>
-        public static DataStore DataStore => _DataStore;
-
-        public static TMDbClient TMDbClient { get => _TMDbClient; }
+        public static ServiceProvider ServiceProvider => _ServiceProvider;
 
         public static string ApiBaseUrl { get; set; }
 
@@ -51,13 +45,20 @@ namespace FilmLibrary
 
             FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
-            _TMDbClient = new TMDbClient("533402a27be0fdb3dff4ad2829149295");
+            ServiceCollection service = new ServiceCollection();
+
+            service.AddSingleton<IDataStore>(sp => DataStore.Load(".\\data.json"));
+            service.AddSingleton<TMDbClient>(sp => new TMDbClient("533402a27be0fdb3dff4ad2829149295"));
+            service.AddSingleton<IMainViewModel>(sp => new MainViewModel());
+            service.AddSingleton<ISearchViewModel>(sp => new SearchViewModel());
+            service.AddSingleton<ICollectionViewModel>(sp => new CollectionViewModel());
+            service.AddSingleton<IFilmViewModel>(sp => new FilmViewModel());
+
+            _ServiceProvider = service.BuildServiceProvider();
 
             ApiBaseUrl = "https://image.tmdb.org/t/p/w500";
 
-            Genres = new ObservableCollection<Genre>(_TMDbClient.GetMovieGenresAsync().Result);
-
-            _DataStore = DataStore.Load();
+            Genres = new ObservableCollection<Genre>(_ServiceProvider.GetService<TMDbClient>().GetMovieGenresAsync().Result);
 
         }
     }

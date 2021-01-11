@@ -1,6 +1,7 @@
 ﻿using CoursWPF.MVVM;
 using CoursWPF.MVVM.ViewModels;
 using CoursWPF.MVVM.ViewModels.Abstracts;
+using FilmLibrary.Models.Abstracts;
 using FilmLibrary.ViewModels;
 using FilmLibrary.ViewModels.Abstracts;
 using System;
@@ -9,20 +10,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 //TODO: doc qui décrit la structure du projet
-//TODO: injection de dépendences ?
-// pas de mode hors connexion nécessaire
-// sauvegarde auto ou bouton sauvegarde
-// onglet Recherche avec formulaire et liste des résultats à gauche, description du film sélectionné à droite + bouton pour ajouter à ma collection
-// onglet Ma Collection avec formulaire de recherche et liste des films à gauche et description du film sélectionné + infos complémentaires à droite
 
 namespace FilmLibrary
 {
-    class MainViewModel : ViewModelList<IViewModel>
+    class MainViewModel : ViewModelList<IViewModel>, IMainViewModel
     {
-        private SearchViewModel _SearchViewModel;
-        private CollectionViewModel _CollectionViewModel;
+        private ISearchViewModel _SearchViewModel;
+        private ICollectionViewModel _CollectionViewModel;
         private RelayCommand _Exit;
         private RelayCommand _Save;
         private CollectionViewModel collectionViewModel;
@@ -35,13 +32,13 @@ namespace FilmLibrary
 
         public MainViewModel()
         {
-            this._SearchViewModel = new SearchViewModel();
-            this._CollectionViewModel = new CollectionViewModel();
-            this.ItemsSource.Add(this._CollectionViewModel);
-            this.ItemsSource.Add(this._SearchViewModel);
-            this.SelectedItem = this._CollectionViewModel;
+            this._SearchViewModel = App.ServiceProvider.GetService<ISearchViewModel>();
+            this._CollectionViewModel = App.ServiceProvider.GetService<ICollectionViewModel>();
+            this.ItemsSource.Add(this._CollectionViewModel as IViewModel);
+            this.ItemsSource.Add(this._SearchViewModel as IViewModel);
+            this.SelectedItem = this._CollectionViewModel as IViewModel;
             this._Exit = new RelayCommand((param) => Environment.Exit(0));
-            this._Save = new RelayCommand((param) => App.DataStore.Save());
+            this._Save = new RelayCommand((param) => App.ServiceProvider.GetService<IDataStore>().Save());
         }
     }
 }
