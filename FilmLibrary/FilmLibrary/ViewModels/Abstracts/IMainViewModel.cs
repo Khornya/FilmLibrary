@@ -3,7 +3,10 @@ using FilmLibrary.ViewModels.Abstracts;
 
 namespace FilmLibrary
 {
-    interface IMainViewModel : IViewModelList<IViewModel>
+    /// <summary>
+    ///     Interface d'un MainViewModel pour gérer une liste de <see cref="IViewModel"/>
+    /// </summary>
+    public interface IMainViewModel : IViewModelList<IViewModel>
     {
     }
 }

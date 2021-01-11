@@ -16,20 +16,63 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FilmLibrary
 {
+    /// <summary>
+    ///     ViewModel principal de l'application
+    /// </summary>
     class MainViewModel : ViewModelList<IViewModel>, IMainViewModel
     {
+        #region Fields
+
+        /// <summary>
+        ///     ViewModel pour l'onglet Rechercher
+        /// </summary>
         private ISearchViewModel _SearchViewModel;
+
+        /// <summary>
+        ///     ViewModel pour l'onglet Collection
+        /// </summary>
         private ICollectionViewModel _CollectionViewModel;
+
+        /// <summary>
+        ///     Commande pour quitter l'application
+        /// </summary>
         private RelayCommand _Exit;
+
+        /// <summary>
+        ///     Commande pour sauvegarder les données
+        /// </summary>
         private RelayCommand _Save;
-        private CollectionViewModel collectionViewModel;
-        private SearchViewModel searchViewModel;
 
-        public SearchViewModel SearchViewModel { get => searchViewModel; set => searchViewModel = value; }
-        public CollectionViewModel CollectionViewModel { get => collectionViewModel; set => collectionViewModel = value; }
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///     Obtient ou définit le ViewModel pour l'onglet Rechercher
+        /// </summary>
+        public ISearchViewModel SearchViewModel { get => _SearchViewModel; set => _SearchViewModel = value; }
+
+        /// <summary>
+        ///     Obtient ou définit le ViewModel pour l'onglet Collection
+        /// </summary>
+        public ICollectionViewModel CollectionViewModel { get => _CollectionViewModel; set => _CollectionViewModel = value; }
+
+        /// <summary>
+        ///     Obtient ou définit la commande pour sauvegarder les données
+        /// </summary>
         public RelayCommand Save { get => _Save; }
-        public RelayCommand Exit { get => _Exit; }
 
+        /// <summary>
+        ///     Obtient ou définit la commande pour quitter l'application
+        /// </summary>
+        public RelayCommand Exit { get => _Exit; }
+        #endregion
+
+        #region Constructors
+        
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="MainViewModel"/>
+        /// </summary>
         public MainViewModel()
         {
             this._SearchViewModel = App.ServiceProvider.GetService<ISearchViewModel>();
@@ -40,5 +83,8 @@ namespace FilmLibrary
             this._Exit = new RelayCommand((param) => Environment.Exit(0));
             this._Save = new RelayCommand((param) => App.ServiceProvider.GetService<IDataStore>().Save());
         }
+
+        #endregion
+
     }
 }

@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace FilmLibrary.ViewModels.Abstracts
 {
-    interface IViewModel
+    /// <summary>
+    ///     Interface d'un ViewModel pour la gestion des onglets
+    /// </summary>
+    public interface IViewModel
     {
     }
 }

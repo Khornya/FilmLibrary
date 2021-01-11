@@ -8,7 +8,10 @@ using TMDbLib.Objects.Search;
 
 namespace FilmLibrary.ViewModels.Abstracts
 {
-    public interface ISearchViewModel : IViewModelList<SearchMovie>
+    /// <summary>
+    ///     Interface d'un SearchViewModel pour gérer une liste de <see cref="SearchMovie"/>
+    /// </summary>
+    public interface ISearchViewModel : IViewModelList<SearchMovie>, IViewModel
     {
     }
 }

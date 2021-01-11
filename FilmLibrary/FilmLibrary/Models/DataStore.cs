@@ -12,11 +12,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FilmLibrary.Models
 {
+    /// <summary>
+    ///     Jeu de données
+    /// </summary>
     public class DataStore : IDataStore
     {
         #region Fields
 
+        /// <summary>
+        ///     Collection de films favoris
+        /// </summary>
         private ObservableCollection<Favorite> _Collection;
+
+        /// <summary>
+        ///     Chemin du fichier de données.
+        /// </summary>
         private string _FilePath;
 
         #endregion
@@ -25,12 +35,18 @@ namespace FilmLibrary.Models
 
         public ObservableCollection<Favorite> Collection => this._Collection;
 
+        /// <summary>
+        ///     Obtient le chemin du fichier de données
+        /// </summary>
         public string FilePath => this._FilePath;
 
         #endregion
 
         #region Constructors
-
+        /// <summary>
+        ///     Initialise une nouvelle instance de la classe <see cref="DataStore"/>
+        /// </summary>
+        /// <param name="path">Chemin du fichier de données</param>
         public DataStore(string path)
         {
             this._Collection = new ObservableCollection<Favorite>();
@@ -41,11 +57,19 @@ namespace FilmLibrary.Models
 
         #region Methods
 
+        /// <summary>
+        ///     Sauvegarde le jeux de données dans un fichier.
+        /// </summary>
         public void Save()
         {
             File.WriteAllText(this._FilePath, JsonConvert.SerializeObject(this));
         }
 
+        /// <summary>
+        ///     Charge le jeu de données depuis le chemin spécifié ou retourne un jeu de données vide
+        /// </summary>
+        /// <param name="path">Chemin du fichier de données</param>
+        /// <returns>Instance du jeu de données</returns>
         public static DataStore Load(string path)
         {
             DataStore dataStore;
