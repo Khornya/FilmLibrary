@@ -14,6 +14,7 @@ using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Search;
 using Microsoft.Extensions.DependencyInjection;
 using TMDbLib.Client;
+using System.Windows;
 
 namespace FilmLibrary.ViewModels
 {
@@ -49,17 +50,12 @@ namespace FilmLibrary.ViewModels
         /// <summary>
         ///     Liste des genres disponibles pour la recherche par genre
         /// </summary>
-        private ObservableCollection<Genre> genres;
-
-        /// <summary>
-        ///     Url de base de l'API
-        /// </summary>
-        private string apiBaseUrl;
+        private ObservableCollection<Genre> _Genres;
 
         /// <summary>
         ///     Texte à rechercher pour la recherche par titre
         /// </summary>
-        private string searchText;
+        private string _SearchText;
 
         /// <summary>
         ///     Nombre de pages de résultats
@@ -82,52 +78,52 @@ namespace FilmLibrary.ViewModels
         /// <summary>
         ///     Obtient ou définit la commande pour rechercher un film par titre
         /// </summary>
-        public RelayCommand SearchByTitle { get => _SearchByTitle; set => _SearchByTitle = value; }
-
-        /// <summary>
-        ///     Obtient ou définit l'URL de base de l'API
-        /// </summary>
-        public string ApiBaseUrl { get => apiBaseUrl; set => apiBaseUrl = value; }
+        public RelayCommand SearchByTitle { get => _SearchByTitle; set => this.SetProperty(nameof(this.SearchByTitle), ref this._SearchByTitle, value); }
 
         /// <summary>
         ///     Obtient ou définit le texte à rechercher
         /// </summary>
-        public string SearchText { get => searchText; set => searchText = value; }
+        public string SearchText { get => _SearchText; set => this.SetProperty(nameof(this.SearchText), ref this._SearchText, value); }
 
         /// <summary>
         ///     Obtient ou définit la liste des genres disponibles
         /// </summary>
-        public ObservableCollection<Genre> Genres { get => genres; set => genres = value; }
+        public ObservableCollection<Genre> Genres { get => _Genres; set => _Genres = value; }
 
         /// <summary>
         ///     Obtient ou définit le genre sélectionné
         /// </summary>
-        public Genre SelectedGenre { get => _SelectedGenre; set => _SelectedGenre = value; }
+        public Genre SelectedGenre { get => _SelectedGenre; set => this.SetProperty(nameof(this.SelectedGenre), ref this._SelectedGenre, value); }
 
         /// <summary>
         ///     Obtient ou définit la commande pour rechercher un film par genre
         /// </summary>
-        public RelayCommand SearchByGenre { get => _SearchByGenre; set => _SearchByGenre = value; }
+        public RelayCommand SearchByGenre { get => _SearchByGenre; set => this.SetProperty(nameof(this.SearchByGenre), ref this._SearchByGenre, value); }
 
         /// <summary>
         ///     Obtient ou définit le ViewModel pour un film
         /// </summary>
-        public FilmViewModel FilmViewModel { get => _FilmViewModel; set => _FilmViewModel = value; }
+        public FilmViewModel FilmViewModel { get => _FilmViewModel; set => this.SetProperty(nameof(this.FilmViewModel), ref this._FilmViewModel, value); }
 
         /// <summary>
         ///     Obtient ou définit le nombre de pages de résultats
         /// </summary>
-        public int SearchResultPageCount { get => _SearchResultPageCount; set => _SearchResultPageCount = value; }
+        public int SearchResultPageCount { get => _SearchResultPageCount; set => this.SetProperty(nameof(this.SearchResultPageCount), ref _SearchResultPageCount, value); }
 
         /// <summary>
         ///     Obtient ou définit la commande pour changer de page de résultats
         /// </summary>
-        public RelayCommand SwitchPage { get => _SwitchPage; set => _SwitchPage = value; }
+        public RelayCommand SwitchPage { get => _SwitchPage; set => this.SetProperty(nameof(this.SwitchPage), ref this._SwitchPage, value); }
 
         /// <summary>
         ///     Obtient ou définit le numéro de la page courante
         /// </summary>
         public int CurrentPage { get => _CurrentPage; set => this.SetProperty(nameof(this.CurrentPage), ref this._CurrentPage, value); }
+
+        /// <summary>
+        ///     Obtient ou définit le mode de recherche courant
+        /// </summary>
+        public string CurrentSearchMode { get => _CurrentSearchMode; set => this.SetProperty(nameof(this.CurrentSearchMode), ref this._CurrentSearchMode, value); }
         #endregion
 
         #region Constructors
@@ -138,13 +134,12 @@ namespace FilmLibrary.ViewModels
         public SearchViewModel()
         {
             this.Title = "Rechercher";
-            this._SearchByTitle = new RelayCommand(this.ExecuteSearchByTitle, this.CanExecuteSearchByTitle);
-            this._SearchByGenre = new RelayCommand(this.ExecuteSearchByGenre, this.CanExecuteSearchByGenre);
-            this._SwitchPage = new RelayCommand(this.ExecuteSwitchPage, this.CanExecuteSwitchPage);
-            this.ApiBaseUrl = "https://image.tmdb.org/t/p/w200";
+            this.SearchByTitle = new RelayCommand(this.ExecuteSearchByTitle, this.CanExecuteSearchByTitle);
+            this.SearchByGenre = new RelayCommand(this.ExecuteSearchByGenre, this.CanExecuteSearchByGenre);
+            this.SwitchPage = new RelayCommand(this.ExecuteSwitchPage, this.CanExecuteSwitchPage);
             this.SearchText = "";
-            this.Genres = new ObservableCollection<Genre>(App.ServiceProvider.GetService<TMDbClient>().GetMovieGenresAsync().Result);
-            this._FilmViewModel = new FilmViewModel();
+            this.Genres = App.Genres;
+            this.FilmViewModel = App.ServiceProvider.GetService<IFilmViewModel>() as FilmViewModel;
         }
 
         #endregion
@@ -165,11 +160,11 @@ namespace FilmLibrary.ViewModels
                     if (this.SelectedItem != null)
                     {
                         Movie selectedMovie = App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
-                        this._FilmViewModel.SelectedFilm = new Film(selectedMovie);
+                        this.FilmViewModel.SelectedFilm = new Film(selectedMovie);
                     }
                     else
                     {
-                        this._FilmViewModel.SelectedFilm = null;
+                        this.FilmViewModel.SelectedFilm = null;
                     }
                     break;
                 default:
@@ -186,20 +181,14 @@ namespace FilmLibrary.ViewModels
         /// <returns>True si la commande peut être exécutée, false sinon</returns>
         private bool CanExecuteSwitchPage(object arg)
         {
-            switch (arg)
+            return arg switch
             {
-                case "+":
-                    return this._CurrentPage < this._SearchResultPageCount;
-                case "-":
-                    return this._CurrentPage > 1;
-                case "--":
-                    return this._CurrentPage != 1;
-                case "++":
-                    return this._CurrentPage != this._SearchResultPageCount;
-                default:
-                    throw new InvalidOperationException();
-
-            }
+                "+" => this._CurrentPage < this._SearchResultPageCount,
+                "-" => this._CurrentPage > 1,
+                "--" => this._CurrentPage != 1,
+                "++" => this._SearchResultPageCount > 0 && this._CurrentPage != this._SearchResultPageCount,
+                _ => throw new InvalidOperationException(),
+            };
         }
 
         /// <summary>
@@ -209,23 +198,14 @@ namespace FilmLibrary.ViewModels
         private void ExecuteSwitchPage(object obj)
         {
             int newPage;
-            switch (obj)
+            newPage = obj switch
             {
-                case "+":
-                    newPage = this._CurrentPage + 1;
-                    break;
-                case "-":
-                    newPage = this._CurrentPage - 1;
-                    break;
-                case "--":
-                    newPage = 1;
-                    break;
-                case "++":
-                    newPage = this._SearchResultPageCount;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
+                "+" => this._CurrentPage + 1,
+                "-" => this._CurrentPage - 1,
+                "--" => 1,
+                "++" => this._SearchResultPageCount,
+                _ => throw new InvalidOperationException(),
+            };
             switch (this._CurrentSearchMode)
             {
                 case "byTitle":
@@ -259,7 +239,7 @@ namespace FilmLibrary.ViewModels
         private void ExecuteSearchByGenre(object obj)
         {
             this.InternalSearchByGenre(1);
-            this._CurrentSearchMode = "byGenre";
+            this.CurrentSearchMode = "byGenre";
         }
 
         #endregion
@@ -283,7 +263,7 @@ namespace FilmLibrary.ViewModels
         private void ExecuteSearchByTitle(object param)
         {
             this.InternalSearchByTitle(1);
-            this._CurrentSearchMode = "byTitle";
+            this.CurrentSearchMode = "byTitle";
         }
 
         #endregion
@@ -294,9 +274,15 @@ namespace FilmLibrary.ViewModels
         /// <param name="page">Page à rechercher</param>
         private void InternalSearchByTitle(int page)
         {
-            SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().SearchMovieAsync(this.SearchText, page).Result;
-            this.CurrentPage = page;
-            this.ProcessResults(results);
+            try
+            {
+                SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().SearchMovieAsync(this.SearchText, page).Result;
+                this.CurrentPage = page;
+                this.ProcessResults(results);
+            } catch (Exception)
+            {
+                MessageBox.Show("Impossible d'obtenir la liste des films", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         /// <summary>
@@ -306,9 +292,16 @@ namespace FilmLibrary.ViewModels
         private void InternalSearchByGenre(int page)
         {
             IEnumerable<int> genreList = new List<int>() { this.SelectedGenre.Id };
-            SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(page).Result;
-            this.CurrentPage = page;
-            this.ProcessResults(results);
+            try
+            {
+                SearchContainer<SearchMovie> results = App.ServiceProvider.GetService<TMDbClient>().DiscoverMoviesAsync().IncludeWithAllOfGenre(genreList).Query(page).Result;
+                this.CurrentPage = page;
+                this.ProcessResults(results);
+            } catch (Exception)
+            {
+                MessageBox.Show("Impossible d'obtenir la liste des films", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
         }
 
         /// <summary>
@@ -317,7 +310,7 @@ namespace FilmLibrary.ViewModels
         /// <param name="results">Retour de l'API</param>
         private void ProcessResults(SearchContainer<SearchMovie> results)
         {
-            this._SearchResultPageCount = results.TotalPages;
+            this.SearchResultPageCount = results.TotalPages;
             this.ItemsSource.Clear();
             foreach (SearchMovie searchMovie in results.Results)
             {

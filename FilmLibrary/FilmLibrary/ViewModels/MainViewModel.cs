@@ -77,9 +77,9 @@ namespace FilmLibrary
         {
             this._SearchViewModel = App.ServiceProvider.GetService<ISearchViewModel>();
             this._CollectionViewModel = App.ServiceProvider.GetService<ICollectionViewModel>();
-            this.ItemsSource.Add(this._CollectionViewModel as IViewModel);
-            this.ItemsSource.Add(this._SearchViewModel as IViewModel);
-            this.SelectedItem = this._CollectionViewModel as IViewModel;
+            this.ItemsSource.Add(_CollectionViewModel);
+            this.ItemsSource.Add(_SearchViewModel);
+            this.SelectedItem = _CollectionViewModel;
             this._Exit = new RelayCommand((param) => Environment.Exit(0));
             this._Save = new RelayCommand((param) => App.ServiceProvider.GetService<IDataStore>().Save());
         }

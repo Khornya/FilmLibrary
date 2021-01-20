@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TMDbLib.Client;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace FilmLibrary.Models
 {

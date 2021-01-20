@@ -58,7 +58,15 @@ namespace FilmLibrary
 
             ApiBaseUrl = "https://image.tmdb.org/t/p/w500";
 
-            Genres = new ObservableCollection<Genre>(_ServiceProvider.GetService<TMDbClient>().GetMovieGenresAsync().Result);
+            try
+            {
+                Genres = new ObservableCollection<Genre>(_ServiceProvider.GetService<TMDbClient>().GetMovieGenresAsync().Result);
+            } catch (Exception)
+            {
+                Genres = new ObservableCollection<Genre>();
+                MessageBox.Show("Impossible d'obtenir la liste des genres", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
 
         }
     }

@@ -27,7 +27,7 @@
             <Button Grid.Row="1" Content="Rechercher par titre" Command="{Binding SearchByTitle}"></Button>
             <ComboBox Grid.Row="2"
                       ItemsSource="{Binding Genres}"
-                      SelectedItem="{Binding SelectedGenre}"
+                      SelectedItem="{Binding SelectedGenre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       DisplayMemberPath="Name">
             </ComboBox>
             <Button Grid.Row="3" Content="Rechercher par genre" Command="{Binding SearchByGenre}"></Button>
@@ -40,10 +40,10 @@
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      DisplayMemberPath="Title"/>
             </Border>
-            <WrapPanel Grid.Row="5" Visibility="{Binding SearchResultPageCount, Converter={StaticResource PageCountToVisibilityConverter}}" HorizontalAlignment="Center">
+            <WrapPanel Grid.Row="5" Visibility="{Binding SearchResultPageCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PageCountToVisibilityConverter}}" HorizontalAlignment="Center">
                 <Button Content="|&lt;" Command="{Binding SwitchPage}" CommandParameter="--" />
                 <Button Content="&lt;" Command="{Binding SwitchPage}" CommandParameter="-" />
-                <Label Content="{Binding CurrentPage}"/>
+                <Label Content="{Binding CurrentPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Content="&gt;" Command="{Binding SwitchPage}" CommandParameter="+" />
                 <Button Content="&gt;|" Command="{Binding SwitchPage}" CommandParameter="++" />
             </WrapPanel>
@@ -51,7 +51,7 @@
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource SharedObjectToVisibilityConverter}}" Margin="10">
             <StackPanel DataContext="{Binding FilmViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button Content="Ajouter à ma collection" Command="{Binding AddToCollection}"/>
-                <local:FilmView DataContext="{Binding SelectedFilm}" />
+                <local:FilmView DataContext="{Binding SelectedFilm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>
