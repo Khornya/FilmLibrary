@@ -48,11 +48,6 @@ namespace FilmLibrary.ViewModels
         private Genre _SelectedGenre;
 
         /// <summary>
-        ///     Liste des genres disponibles pour la recherche par genre
-        /// </summary>
-        private ObservableCollection<Genre> _Genres;
-
-        /// <summary>
         ///     Texte à rechercher pour la recherche par titre
         /// </summary>
         private string _SearchText;
@@ -84,11 +79,6 @@ namespace FilmLibrary.ViewModels
         ///     Obtient ou définit le texte à rechercher
         /// </summary>
         public string SearchText { get => _SearchText; set => this.SetProperty(nameof(this.SearchText), ref this._SearchText, value); }
-
-        /// <summary>
-        ///     Obtient ou définit la liste des genres disponibles
-        /// </summary>
-        public ObservableCollection<Genre> Genres { get => _Genres; set => _Genres = value; }
 
         /// <summary>
         ///     Obtient ou définit le genre sélectionné
@@ -138,7 +128,6 @@ namespace FilmLibrary.ViewModels
             this.SearchByGenre = new RelayCommand(this.ExecuteSearchByGenre, this.CanExecuteSearchByGenre);
             this.SwitchPage = new RelayCommand(this.ExecuteSwitchPage, this.CanExecuteSwitchPage);
             this.SearchText = "";
-            this.Genres = App.Genres;
             this.FilmViewModel = App.ServiceProvider.GetService<IFilmViewModel>() as FilmViewModel;
         }
 
@@ -159,8 +148,15 @@ namespace FilmLibrary.ViewModels
                 case nameof(this.SelectedItem):
                     if (this.SelectedItem != null)
                     {
-                        Movie selectedMovie = App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
-                        this.FilmViewModel.SelectedFilm = new Film(selectedMovie);
+                        try
+                        {
+                            Movie selectedMovie = App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(this.SelectedItem.Id, MovieMethods.Credits).Result;
+                            this.FilmViewModel.SelectedFilm = new Film(selectedMovie);
+                        } catch (Exception)
+                        {
+                            MessageBox.Show("Impossible d'obtenir les détails de ce film", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        
                     }
                     else
                     {
@@ -281,7 +277,7 @@ namespace FilmLibrary.ViewModels
                 this.ProcessResults(results);
             } catch (Exception)
             {
-                MessageBox.Show("Impossible d'obtenir la liste des films", "Alert", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Impossible d'obtenir la liste des films", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -299,7 +295,7 @@ namespace FilmLibrary.ViewModels
                 this.ProcessResults(results);
             } catch (Exception)
             {
-                MessageBox.Show("Impossible d'obtenir la liste des films", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Impossible d'obtenir la liste des films", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }

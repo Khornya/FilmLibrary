@@ -79,15 +79,21 @@ namespace FilmLibrary.Models
             {
                 dataStore = JsonConvert.DeserializeObject<DataStore>(File.ReadAllText(path));
                 dataStore._FilePath = path;
-
-                foreach (Favorite favorite in dataStore.Collection)
-                {
-                    favorite.Film = new Film(App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(favorite.Film.Id).Result);
-                }
             }
             catch
             {
                 dataStore = new DataStore(path);
+            }
+
+            foreach (Favorite favorite in dataStore.Collection)
+            {
+                try
+                {
+                    favorite.Film = new Film(App.ServiceProvider.GetService<TMDbClient>().GetMovieAsync(favorite.Film.Id).Result);
+                } catch
+                {
+                    MessageBox.Show("Impossible d'obtenir les détails du film \"" + favorite.Film.Title + "\"", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
 
             return dataStore;

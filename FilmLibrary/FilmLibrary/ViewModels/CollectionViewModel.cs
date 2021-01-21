@@ -107,7 +107,8 @@ namespace FilmLibrary.ViewModels
         {
             this.Title = "Ma Collection";
             this.SearchText = "";
-            this._Genres = App.Genres;
+            this._Genres = new ObservableCollection<Genre>(App.Genres);
+            this._Genres.Insert(0, new Genre() { Id = -1, Name = "<Tous>" });
             this.ItemsSource = App.ServiceProvider.GetService<IDataStore>().Collection;
             this._RemoveFromCollection = new RelayCommand(this.ExecuteRemoveFromCollection);
             this._UpdateNote = new RelayCommand(this.ExecuteUpdateNote, this.CanExecuteUpdateNote);
@@ -204,7 +205,14 @@ namespace FilmLibrary.ViewModels
         /// <param name="obj">Le paramètre de la commande</param>
         private void ExecuteSearchByGenre(object obj)
         {
-            this.ItemsSource = new ObservableCollection<Favorite>(App.ServiceProvider.GetService<IDataStore>().Collection.Where(favorite => favorite.Film.Genres.Contains(this.SelectedGenre.Name)));
+            if (this.SelectedGenre.Id == -1)
+            {
+                this.ItemsSource = App.ServiceProvider.GetService<IDataStore>().Collection;
+            } else
+            {
+                this.ItemsSource = new ObservableCollection<Favorite>(App.ServiceProvider.GetService<IDataStore>().Collection.Where(favorite => favorite.Film.Genres.Contains(this.SelectedGenre.Name)));
+            }
+            
         }
         #endregion
 
